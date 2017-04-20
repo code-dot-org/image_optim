@@ -100,6 +100,8 @@ class ImageOptim
           Digest::SHA1.file(path).hexdigest[0, 8] if path
         when :guetzli
           capture("#{escaped_path} -version 2> #{Path::NULL}")[/.*/]
+        when :convert
+          capture("#{escaped_path} -version 2> #{Path::NULL}")[/ImageMagick (([^\s]|[\d])+)/, 1]
         else
           fail "getting `#{name}` version is not defined"
         end
