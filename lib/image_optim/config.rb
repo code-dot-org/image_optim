@@ -32,7 +32,8 @@ class ImageOptim
           return {}
         end
         return {} unless File.size?(full_path)
-        config = YAML.load_file(full_path)
+
+        config = load_yaml_file(full_path)
         unless config.is_a?(Hash)
           fail "expected hash, got #{config.inspect}"
         end
@@ -40,6 +41,14 @@ class ImageOptim
       rescue => e
         warn "exception when reading #{full_path}: #{e}"
         {}
+      end
+
+      def load_yaml_file(path)
+        if YAML.respond_to?(:safe_load_file)
+          YAML.safe_load_file(path, permitted_classes: [Range])
+        else
+          YAML.load_file(path)
+        end
       end
     end
 
